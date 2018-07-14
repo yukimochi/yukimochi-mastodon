@@ -1,216 +1,72 @@
 version: 2
-
-aliases:
-  - &defaults
+jobs:
+  assets-precompile:
+    working_directory: /mastodon
     docker:
-      - image: circleci/ruby:2.6.0-stretch-node
-        environment: &ruby_environment
-          BUNDLE_APP_CONFIG: ./.bundle/
-          DB_HOST: localhost
-          DB_USER: root
-          RAILS_ENV: test
-          PARALLEL_TEST_PROCESSORS: 4
-          ALLOW_NOPAM: true
-          CONTINUOUS_INTEGRATION: true
-          DISABLE_SIMPLECOV: true
-          PAM_ENABLED: true
-          PAM_DEFAULT_SERVICE: pam_test
-          PAM_CONTROLLED_SERVICE: pam_test_controlled
-    working_directory: ~/projects/mastodon/
+      - image: yukimochi/mastodon-assets-precompiler
+    steps:
+      - run:
+          name: Add Remote Repository
+          command: |
+            git config --global url."https://github.com/".insteadOf "git@github.com:"
+            git remote add ykmc ${CIRCLE_REPOSITORY_URL}
+            git fetch --force ykmc
+            git reset --hard ${CIRCLE_SHA1}
+      - run:
+          name: Resetup Dependencies
+          command: |
+            bundle install --deployment --without test development
+            yarn --pure-lockfile
+            yarn cache clean
+      - run:
+          name: Creating assets
+          command: |
+            cp .env.production.sample .env.production
+            OTP_SECRET=precompile_placeholder SECRET_KEY_BASE=precompile_placeholder SENTRY_DSN=precompile_placeholder bundle exec rake assets:precompile
+            find ./public/assets -name "*.js" -or -name "*.css" | xargs -t brotli -q 10
+            find ./public/packs -name "*.js" -or -name "*.css" -or -name "*.svg" -or -name "*.ttf" -or -name "*.eot" | xargs -t brotli -q 10
+            tar cfz ~/assets-${CIRCLE_SHA1}.tar.gz public/assets public/packs
+      - run:
+          name: Send assets s3
+          command: |
+            mc config host add --api ${s3_apiver} ykmc ${s3_endpoint} ${s3_accesskey} ${s3_secretkey}
+            mc cp ~/assets-${CIRCLE_SHA1}.tar.gz ${backet}/${CIRCLE_BRANCH}/
 
-  - &attach_workspace
-    attach_workspace:
-      at: ~/projects/
-
-  - &persist_to_workspace
-    persist_to_workspace:
-      root: ~/projects/
-      paths:
-        - ./mastodon/
-
-  - &restore_ruby_dependencies
-    restore_cache:
-      keys:
-        - v2-ruby-dependencies-{{ checksum "/tmp/.ruby-version" }}-{{ checksum "Gemfile.lock" }}
-        - v2-ruby-dependencies-{{ checksum "/tmp/.ruby-version" }}-
-        - v2-ruby-dependencies-
-
-  - &install_steps
+  build-image:
+    docker:
+      - image: docker:git
     steps:
       - checkout
-      - *attach_workspace
+      - setup_remote_docker
+      - run:
+          name: build image
+          command: |
+            docker build . -f Dockerfile.slim-stretch -t yukimochi/mastodon:latest-amd64
+            docker tag yukimochi/mastodon:latest-amd64 yukimochi/mastodon:$(echo ${CIRCLE_SHA1}|head -c7)-amd64
+            docker login --username=${DOCKER_USER} --password=${DOCKER_PASS}
+            docker push yukimochi/mastodon:latest-amd64
+            docker push yukimochi/mastodon:$(echo ${CIRCLE_SHA1}|head -c7)-amd64
 
-      - restore_cache:
-          keys:
-            - v1-node-dependencies-{{ checksum "yarn.lock" }}
-            - v1-node-dependencies-
-      - run: yarn install --frozen-lockfile
-      - save_cache:
-          key: v1-node-dependencies-{{ checksum "yarn.lock" }}
-          paths:
-            - ./node_modules/
-
-      - *persist_to_workspace
-
-  - &install_system_dependencies
-      run:
-        name: Install system dependencies
-        command: |
-          sudo apt-get update
-          sudo apt-get install -y libicu-dev libidn11-dev libprotobuf-dev protobuf-compiler
-
-  - &install_ruby_dependencies
-      steps:
-        - *attach_workspace
-
-        - *install_system_dependencies
-
-        - run: ruby -e 'puts RUBY_VERSION' | tee /tmp/.ruby-version
-        - *restore_ruby_dependencies
-        - run: bundle install --clean --jobs 16 --path ./vendor/bundle/ --retry 3 --with pam_authentication --without development production && bundle clean
-        - save_cache:
-            key: v2-ruby-dependencies-{{ checksum "/tmp/.ruby-version" }}-{{ checksum "Gemfile.lock" }}
-            paths:
-              - ./.bundle/
-              - ./vendor/bundle/
-        - persist_to_workspace:
-            root: ~/projects/
-            paths:
-                - ./mastodon/.bundle/
-                - ./mastodon/vendor/bundle/
-
-  - &test_steps
-      steps:
-        - *attach_workspace
-
-        - *install_system_dependencies
-        - run: sudo apt-get install -y ffmpeg
-
-        - run:
-            name: Prepare Tests
-            command: ./bin/rails parallel:create parallel:load_schema parallel:prepare
-        - run:
-            name: Run Tests
-            command: ./bin/retry bundle exec parallel_test ./spec/ --group-by filesize --type rspec
-
-jobs:
-  install:
-    <<: *defaults
-    <<: *install_steps
-
-  install-ruby2.6:
-    <<: *defaults
-    <<: *install_ruby_dependencies
-
-  install-ruby2.5:
-    <<: *defaults
+  push-manifest:
     docker:
-      - image: circleci/ruby:2.5.3-stretch-node
-        environment: *ruby_environment
-    <<: *install_ruby_dependencies
-
-  install-ruby2.4:
-    <<: *defaults
-    docker:
-      - image: circleci/ruby:2.4.5-stretch-node
-        environment: *ruby_environment
-    <<: *install_ruby_dependencies
-
-  build:
-    <<: *defaults
+      - image: docker:git
     steps:
-      - *attach_workspace
-      - *install_system_dependencies
-      - run: ./bin/rails assets:precompile
-      - persist_to_workspace:
-          root: ~/projects/
-          paths:
-              - ./mastodon/public/assets
-              - ./mastodon/public/packs-test/
-
-  test-ruby2.6:
-    <<: *defaults
-    docker:
-      - image: circleci/ruby:2.6.0-stretch-node
-        environment: *ruby_environment
-      - image: circleci/postgres:10.6-alpine
-        environment:
-          POSTGRES_USER: root
-      - image: circleci/redis:5.0.3-alpine3.8
-    <<: *test_steps
-
-  test-ruby2.5:
-    <<: *defaults
-    docker:
-      - image: circleci/ruby:2.5.3-stretch-node
-        environment: *ruby_environment
-      - image: circleci/postgres:10.6-alpine
-        environment:
-          POSTGRES_USER: root
-      - image: circleci/redis:4.0.12-alpine
-    <<: *test_steps
-
-  test-ruby2.4:
-    <<: *defaults
-    docker:
-      - image: circleci/ruby:2.4.5-stretch-node
-        environment: *ruby_environment
-      - image: circleci/postgres:10.6-alpine
-        environment:
-          POSTGRES_USER: root
-      - image: circleci/redis:4.0.12-alpine
-    <<: *test_steps
-
-  test-webui:
-    <<: *defaults
-    docker:
-      - image: circleci/node:8.15.0-stretch
-    steps:
-      - *attach_workspace
-      - run: ./bin/retry yarn test:jest
-
-  check-i18n:
-    <<: *defaults
-    steps:
-      - *attach_workspace
-      - run: bundle exec i18n-tasks check-normalized
-      - run: bundle exec i18n-tasks unused -l en
-      - run: bundle exec i18n-tasks check-consistent-interpolations
-
+      - checkout
+      - setup_remote_docker
+      - run:
+          name: build image
+          command: |
+            wget https://github.com/estesp/manifest-tool/releases/download/v0.7.0/manifest-tool-linux-amd64 -O /usr/bin/manifest-tool
+            chmod +x /usr/bin/manifest-tool
+            docker login --username=${DOCKER_USER} --password=${DOCKER_PASS}
+            manifest-tool push from-spec manifest.yaml
+    
 workflows:
   version: 2
-  build-and-test:
+  build:
     jobs:
-      - install
-      - install-ruby2.6:
+      - assets-precompile
+      - build-image
+      - push-manifest:
           requires:
-            - install
-      - install-ruby2.5:
-          requires:
-            - install
-            - install-ruby2.6
-      - install-ruby2.4:
-          requires:
-            - install
-            - install-ruby2.6
-      - build:
-          requires:
-            - install-ruby2.6
-      - test-ruby2.6:
-          requires:
-            - install-ruby2.6
-            - build
-      - test-ruby2.5:
-          requires:
-            - install-ruby2.5
-            - build
-      - test-ruby2.4:
-          requires:
-            - install-ruby2.4
-            - build
-      - test-webui:
-          requires:
-            - install
-      - check-i18n:
-          requires:
-            - install-ruby2.6
+            - build-image
