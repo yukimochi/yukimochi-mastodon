@@ -13,8 +13,9 @@
 
   .landing__grid
     .landing__grid__column.landing__grid__column-registration
-      .box-widget
-        = render 'registration'
+      - if !user_signed_in?
+        .box-widget
+          = render 'registration'
 
       .directory
         - if Setting.profile_directory
@@ -45,8 +46,9 @@
               %small= t('about.apps_platforms')
 
     .landing__grid__column.landing__grid__column-login
-      .box-widget
-        = render 'login'
+      - if !user_signed_in?
+        .box-widget
+          = render 'login'
 
       .hero-widget
         .hero-widget__img
