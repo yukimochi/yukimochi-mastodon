@@ -13,7 +13,7 @@
 
   .landing__grid
     .landing__grid__column.landing__grid__column-registration
-      - if !user_signed_in?
+      - if !user_signed_in? and !closed_registrations?
         .box-widget
           = render 'registration'
 
@@ -46,7 +46,7 @@
               %small= t('about.apps_platforms')
 
     .landing__grid__column.landing__grid__column-login
-      - if !user_signed_in?
+      - if !user_signed_in? and !closed_registrations?
         .box-widget
           = render 'login'
 
