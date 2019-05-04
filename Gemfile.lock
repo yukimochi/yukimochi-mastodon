@@ -41,6 +41,14 @@ GIT
   specs:
     nilsimsa (1.1.2)
 
+GIT
+  remote: https://github.com/yukimochi/prome.git
+  revision: 563d1dd5ea9077db3cd864d48d897be9a472abb8
+  specs:
+    prome (0.1.0)
+      prometheus-client (~> 0.6.0)
+      rails (> 5.0.0)
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -442,6 +450,8 @@ GEM
       actionmailer (>= 3)
       premailer (~> 1.7, >= 1.7.9)
     private_address_check (0.5.0)
+    prometheus-client (0.6.0)
+      quantile (~> 0.2.0)
     pry (0.12.2)
       coderay (~> 1.1.0)
       method_source (~> 0.9.0)
@@ -455,6 +465,7 @@ GEM
       nio4r (~> 2.0)
     pundit (2.1.0)
       activesupport (>= 3.0.0)
+    quantile (0.2.1)
     raabro (1.1.6)
     rack (2.0.7)
     rack-attack (6.1.0)
@@ -575,6 +586,8 @@ GEM
       crass (~> 1.0.2)
       nokogiri (>= 1.8.0)
       nokogumbo (~> 2.0)
+    sentry-raven (2.9.0)
+      faraday (>= 0.7.6, < 1.0)
     sidekiq (5.2.7)
       connection_pool (~> 2.2, >= 2.2.2)
       rack (>= 1.5.0)
@@ -757,6 +770,7 @@ DEPENDENCIES
   posix-spawn!
   premailer-rails
   private_address_check (~> 0.5)
+  prome!
   pry-byebug (~> 3.7)
   pry-rails (~> 0.3)
   puma (~> 4.2)
@@ -778,6 +792,7 @@ DEPENDENCIES
   rubocop-rails (~> 2.3)
   ruby-progressbar (~> 1.10)
   sanitize (~> 5.1)
+  sentry-raven
   sidekiq (~> 5.2)
   sidekiq-bulk (~> 0.2.0)
   sidekiq-scheduler (~> 3.0)
