@@ -19,6 +19,7 @@ gem 'pg', '~> 1.2'
 gem 'makara', '~> 0.4'
 gem 'pghero', '~> 2.4'
 gem 'dotenv-rails', '~> 2.7'
+gem 'prome', :git => "https://github.com/yukimochi/prome.git"
 
 gem 'aws-sdk-s3', '~> 1.60', require: false
 gem 'fog-core', '<= 2.1.0'
@@ -103,6 +104,7 @@ gem 'webpush'
 gem 'json-ld'
 gem 'json-ld-preloaded', '~> 3.1'
 gem 'rdf-normalize', '~> 0.4'
+gem 'sentry-raven'
 
 group :development, :test do
   gem 'fabrication', '~> 2.21'
