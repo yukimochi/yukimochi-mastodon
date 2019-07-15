@@ -672,9 +672,48 @@ const startWorker = (workerId) => {
   process.on('uncaughtException', onError);
 };
 
-throng({
-  workers: numWorkers,
-  lifetime: Infinity,
-  start: startWorker,
-  master: startMaster,
+const attachServerWithConfig = (server, onSuccess) => {
+  if (process.env.SOCKET || process.env.PORT && isNaN(+process.env.PORT)) {
+    server.listen(process.env.SOCKET || process.env.PORT, () => {
+      if (onSuccess) {
+        fs.chmodSync(server.address(), 0o666);
+        onSuccess(server.address());
+      }
+    });
+  } else {
+    server.listen(+process.env.PORT || 4000, process.env.BIND || '127.0.0.1', () => {
+      if (onSuccess) {
+        onSuccess(`${server.address().address}:${server.address().port}`);
+      }
+    });
+  }
+};
+
+const onPortAvailable = onSuccess => {
+  const testServer = http.createServer();
+
+  testServer.once('error', err => {
+    onSuccess(err);
+  });
+
+  testServer.once('listening', () => {
+    testServer.once('close', () => onSuccess());
+    testServer.close();
+  });
+
+  attachServerWithConfig(testServer);
+};
+
+onPortAvailable(err => {
+  if (err) {
+    log.error('Could not start server, the port or socket is in use');
+    return;
+  }
+
+  throng({
+    workers: numWorkers,
+    lifetime: Infinity,
+    start: startWorker,
+    master: startMaster,
+  });
 });
