@@ -5,7 +5,7 @@ ruby '>= 2.4.0', '< 2.7.0'
 
 gem 'pkg-config', '~> 1.3'
 
-gem 'puma', '~> 4.0'
+gem 'puma', '~> 4.1'
 gem 'rails', '~> 5.2.3'
 gem 'thor', '~> 0.20'
 
@@ -33,7 +33,7 @@ gem 'iso-639'
 gem 'chewy', git: 'https://github.com/noellabo/chewy.git', branch: 'es6-client-compatibility-workaround-for-es7'  
 gem 'cld3', '~> 3.2.4'
 gem 'devise', '~> 4.6'
-gem 'devise-two-factor', '~> 3.0'
+gem 'devise-two-factor', '~> 3.1'
 
 group :pam_authentication, optional: true do
   gem 'devise_pam_authenticatable2', '~> 9.2'
@@ -112,9 +112,9 @@ group :production, :test do
 end
 
 group :test do
-  gem 'capybara', '~> 3.27'
+  gem 'capybara', '~> 3.28'
   gem 'climate_control', '~> 0.2'
-  gem 'faker', '~> 1.9'
+  gem 'faker', '~> 2.1'
   gem 'microformats', '~> 4.1'
   gem 'rails-controller-testing', '~> 1.0'
   gem 'rspec-sidekiq', '~> 3.0'
@@ -132,7 +132,7 @@ group :development do
   gem 'letter_opener', '~> 1.7'
   gem 'letter_opener_web', '~> 1.3'
   gem 'memory_profiler'
-  gem 'rubocop', '~> 0.73', require: false
+  gem 'rubocop', '~> 0.74', require: false
   gem 'rubocop-rails', '~> 2.2', require: false
   gem 'brakeman', '~> 4.6', require: false
   gem 'bundler-audit', '~> 0.6', require: false
