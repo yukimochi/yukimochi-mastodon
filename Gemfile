@@ -32,7 +32,7 @@ gem 'charlock_holmes', '~> 0.7.6'
 gem 'iso-639'
 gem 'chewy', git: 'https://github.com/noellabo/chewy.git', branch: 'es6-client-compatibility-workaround-for-es7'  
 gem 'cld3', '~> 3.2.4'
-gem 'devise', '~> 4.6'
+gem 'devise', '~> 4.7'
 gem 'devise-two-factor', '~> 3.1'
 
 group :pam_authentication, optional: true do
@@ -94,7 +94,7 @@ gem 'tzinfo-data', '~> 1.2019'
 gem 'webpacker', '~> 4.0'
 gem 'webpush'
 
-gem 'json-ld', git: 'https://github.com/ruby-rdf/json-ld.git', ref: '345b7a5733308af827e8491d284dbafa9128d7a2'
+gem 'json-ld', git: 'https://github.com/ruby-rdf/json-ld.git', ref: 'e742697a0906e74e8bb777ef98137bc3955d981d'
 gem 'json-ld-preloaded', '~> 3.0'
 gem 'rdf-normalize', '~> 0.3'
 gem 'sentry-raven'
