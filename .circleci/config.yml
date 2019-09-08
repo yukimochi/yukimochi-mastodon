@@ -27,11 +27,6 @@ jobs:
             find ./public/packs -name "*.js" -or -name "*.css" -or -name "*.svg" -or -name "*.ttf" -or -name "*.eot" | xargs -t brotli -q 10
             tar cfz ~/assets-${CIRCLE_SHA1}.tar.gz public/assets public/packs
             cp ~/assets-${CIRCLE_SHA1}.tar.gz /assets.tar.gz
-      - run:
-          name: Send assets s3
-          command: |
-            mc config host add --api ${s3_apiver} ykmc ${s3_endpoint} ${s3_accesskey} ${s3_secretkey}
-            mc cp ~/assets-${CIRCLE_SHA1}.tar.gz ${backet}/${CIRCLE_BRANCH}/
       - persist_to_workspace:
           root: /
           paths:
@@ -48,8 +43,8 @@ jobs:
       - run:
           name: build proxy image
           command: |
-            docker build . -f Dockerfile.proxy -t yukimochi/mastodon:proxy-amd64
-            docker tag yukimochi/mastodon:proxy-amd64 yukimochi/mastodon:proxy-$(echo ${CIRCLE_SHA1}|head -c7)-amd64
+            docker build . -f Dockerfile.proxy -t ${REGISTORY_PATH}/mastodon:proxy-amd64
+            docker tag ${REGISTORY_PATH}/mastodon:proxy-amd64 ${REGISTORY_PATH}/mastodon:proxy-$(echo ${CIRCLE_SHA1}|head -c7)-amd64
       - run:
           name: extract assets
           command: |
@@ -58,30 +53,16 @@ jobs:
       - run:
           name: build mastodon image
           command: |
-            docker build . -f Dockerfile.slim-buster -t yukimochi/mastodon:latest-amd64
-            docker tag yukimochi/mastodon:latest-amd64 yukimochi/mastodon:$(echo ${CIRCLE_SHA1}|head -c7)-amd64
+            docker build . -f Dockerfile.slim-buster -t ${REGISTORY_PATH}/mastodon:latest-amd64
+            docker tag ${REGISTORY_PATH}/mastodon:latest-amd64 ${REGISTORY_PATH}/mastodon:$(echo ${CIRCLE_SHA1}|head -c7)-amd64
       - run:
           name: upload image
           command: |
-            docker login --username=${DOCKER_USER} --password=${DOCKER_PASS}
-            docker push yukimochi/mastodon:latest-amd64
-            docker push yukimochi/mastodon:$(echo ${CIRCLE_SHA1}|head -c7)-amd64
-            docker push yukimochi/mastodon:proxy-amd64
-            docker push yukimochi/mastodon:proxy-$(echo ${CIRCLE_SHA1}|head -c7)-amd64
-
-  push-manifest:
-    docker:
-      - image: docker:git
-    steps:
-      - checkout
-      - setup_remote_docker
-      - run:
-          name: build image
-          command: |
-            wget https://github.com/estesp/manifest-tool/releases/download/v0.7.0/manifest-tool-linux-amd64 -O /usr/bin/manifest-tool
-            chmod +x /usr/bin/manifest-tool
-            docker login --username=${DOCKER_USER} --password=${DOCKER_PASS}
-            manifest-tool push from-spec manifest.yaml
+            docker login ${REGISTORY_PATH} -u ${REGISTORY_USER} -p ${REGISTORY_PASS}
+            docker push ${REGISTORY_PATH}/mastodon:latest-amd64
+            docker push ${REGISTORY_PATH}/mastodon:$(echo ${CIRCLE_SHA1}|head -c7)-amd64
+            docker push ${REGISTORY_PATH}/mastodon:proxy-amd64
+            docker push ${REGISTORY_PATH}/mastodon:proxy-$(echo ${CIRCLE_SHA1}|head -c7)-amd64
 
 workflows:
   version: 2
@@ -91,6 +72,3 @@ workflows:
       - build-image:
           requires:
             - assets-precompile
-      - push-manifest:
-          requires:
-            - build-image
