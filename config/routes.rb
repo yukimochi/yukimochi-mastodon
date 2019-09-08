@@ -12,6 +12,8 @@ Rails.application.routes.draw do
   mount LetterOpenerWeb::Engine, at: 'letter_opener' if Rails.env.development?
 
   mount Prome::Web, at: "/metrics"
+  health_check_routes
+
   authenticate :user, lambda { |u| u.admin? } do
     mount Sidekiq::Web, at: 'sidekiq', as: :sidekiq
     mount PgHero::Engine, at: 'pghero', as: :pghero
@@ -316,6 +318,7 @@ Rails.application.routes.draw do
       resources :trends,       only: [:index]
       resources :filters,      only: [:index, :create, :show, :update, :destroy]
       resources :endorsements, only: [:index]
+      resources :markers,      only: [:index, :create]
 
       namespace :apps do
         get :verify_credentials, to: 'credentials#show'
