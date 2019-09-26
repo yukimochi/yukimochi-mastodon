@@ -1,0 +1,55 @@
+name: Building Images
+on:
+  push:
+    branches:
+      - production
+
+jobs:
+  pre-compile:
+    name: Pre-Compile Assets
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/setup-ruby@v1
+        with:
+          ruby-version: '2.6.x'
+      - uses: actions/checkout@master
+      - name: Setup Dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install --no-install-recommends build-essential gnupg2 libicu-dev libidn11-dev libtool libpq-dev libprotobuf-dev python libicu60 libidn11 libpq5 libprotobuf10 openssl protobuf-compiler
+      - name: Install brotli
+        run: |
+          git clone https://github.com/google/brotli.git /tmp/brotli
+          cd /tmp/brotli
+          mkdir out
+          cd out
+          cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=./installed ..
+          cmake --build . --config Release --target install
+          sudo cp installed/bin/brotli /usr/local/bin/
+          rm -rf /tmp/brotli/
+      - name: Setup Mastodon Dependencies
+        run: |
+          bundle install --deployment --without test development
+          yarn --pure-lockfile
+          yarn cache clean
+      - name: Creating Assets
+        run: |
+          cp .env.production.sample .env.production
+          RAILS_ENV=production OTP_SECRET=precompile_placeholder SECRET_KEY_BASE=precompile_placeholder SENTRY_DSN=precompile_placeholder bundle exec rake assets:precompile
+          find ./public/assets -name "*.js" -or -name "*.css" | xargs -t brotli -q 10
+          find ./public/packs -name "*.js" -or -name "*.css" -or -name "*.svg" -or -name "*.ttf" -or -name "*.eot" | xargs -t brotli -q 10
+      - name: Build proxy image
+        run: |
+          docker build . -f Dockerfile.proxy -t ${{secrets.REGISTORY_PATH}}/mastodon-proxy:latest-amd64
+          docker tag ${{secrets.REGISTORY_PATH}}/mastodon-proxy:latest-amd64 ${{secrets.REGISTORY_PATH}}/mastodon-proxy:$(echo ${GITHUB_SHA}|head -c7)-amd64
+      - name: Build mastodon image
+        run: |
+          docker build . -f Dockerfile.slim-buster -t ${{secrets.REGISTORY_PATH}}/mastodon:latest-amd64
+          docker tag ${{secrets.REGISTORY_PATH}}/mastodon:latest-amd64 ${{secrets.REGISTORY_PATH}}/mastodon:$(echo ${GITHUB_SHA}|head -c7)-amd64
+      - name: Upload image
+        run: |
+          docker login -u ${{secrets.REGISTORY_USER}} -p ${{secrets.REGISTORY_PASS}}
+          docker push ${{secrets.REGISTORY_PATH}}/mastodon:latest-amd64
+          docker push ${{secrets.REGISTORY_PATH}}/mastodon:$(echo ${GITHUB_SHA}|head -c7)-amd64
+          docker push ${{secrets.REGISTORY_PATH}}/mastodon-proxy:latest-amd64
+          docker push ${{secrets.REGISTORY_PATH}}/mastodon-proxy:$(echo ${GITHUB_SHA}|head -c7)-amd64
