@@ -1,0 +1,7 @@
+image: yukimochi/mastodon:latest
+manifests:
+  -
+    image: yukimochi/mastodon:latest-amd64
+    platform:
+      architecture: amd64
+      os: linux
