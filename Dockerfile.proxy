@@ -1,0 +1,8 @@
+FROM caddy:2.2.0
+
+WORKDIR /usr/share/caddy
+EXPOSE 80 443
+
+COPY public/ /usr/share/caddy
+
+CMD ["caddy", "run", "--config", "/etc/caddy/Caddyfile", "--adapter", "caddyfile"]
