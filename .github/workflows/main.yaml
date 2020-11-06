@@ -9,14 +9,11 @@ jobs:
     name: Pre-Compile Assets
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/setup-ruby@v1
-        with:
-          ruby-version: '2.6.x'
       - uses: actions/checkout@master
       - name: Setup Dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install --no-install-recommends build-essential gnupg2 libicu-dev libidn11-dev libtool libpq-dev libprotobuf-dev python libicu60 libidn11 libpq5 libprotobuf10 openssl protobuf-compiler
+          sudo apt-get install --no-install-recommends build-essential
       - name: Install brotli
         run: |
           git clone https://github.com/google/brotli.git /tmp/brotli
@@ -27,15 +24,13 @@ jobs:
           cmake --build . --config Release --target install
           sudo cp installed/bin/brotli /usr/local/bin/
           rm -rf /tmp/brotli/
-      - name: Setup Mastodon Dependencies
+      - name: Build Prep-Image and Creating Assets
         run: |
-          bundle install --deployment --without test development
-          yarn --pure-lockfile
-          yarn cache clean
-      - name: Creating Assets
+          docker build . -f Dockerfile.slim-buster -t prep-image
+          docker run -e RAILS_ENV=production -e OTP_SECRET=precompile_placeholder -e SECRET_KEY_BASE=precompile_placeholder -e SENTRY_DSN=precompile_placeholder --name prep-container prep-image bundle exec rake assets:precompile
+      - name: Compress Assets
         run: |
-          cp .env.production.sample .env.production
-          RAILS_ENV=production OTP_SECRET=precompile_placeholder SECRET_KEY_BASE=precompile_placeholder SENTRY_DSN=precompile_placeholder bundle exec rake assets:precompile
+          docker cp prep-container:/mastodon/public .
           find ./public/assets -name "*.js" -or -name "*.css" | xargs -t brotli -q 10
           find ./public/packs -name "*.js" -or -name "*.css" -or -name "*.svg" -or -name "*.ttf" -or -name "*.eot" | xargs -t brotli -q 10
       - name: Build proxy image
