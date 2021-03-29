@@ -105,7 +105,7 @@ gem 'rdf-normalize', '~> 0.4'
 gem 'sentry-raven'
 
 group :development, :test do
-  gem 'fabrication', '~> 2.21'
+  gem 'fabrication', '~> 2.22'
   gem 'fuubar', '~> 2.5'
   gem 'i18n-tasks', '~> 0.9', require: false
   gem 'pry-byebug', '~> 3.9'
