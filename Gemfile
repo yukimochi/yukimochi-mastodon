@@ -98,6 +98,7 @@ gem 'webauthn', '~> 2.5'
 gem 'json-ld'
 gem 'json-ld-preloaded', '~> 3.2'
 gem 'rdf-normalize', '~> 0.5'
+gem 'sentry-raven'
 
 group :development, :test do
   gem 'fabrication', '~> 2.30'
