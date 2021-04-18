@@ -1,0 +1,58 @@
+FROM debian:buster AS jemalloc
+
+ENV JEMALLOC_VER 5.2.1
+
+RUN mkdir /rootfs
+
+RUN apt-get update \
+&& apt-get -y install --no-install-recommends build-essential bzip2 ca-certificates curl \
+&& curl -L https://github.com/jemalloc/jemalloc/releases/download/$JEMALLOC_VER/jemalloc-$JEMALLOC_VER.tar.bz2 | tar jx \
+&& cd jemalloc-$JEMALLOC_VER \
+&& ./configure --prefix=/rootfs \
+&& make -j$(getconf _NPROCESSORS_ONLN) \
+&& make install
+
+FROM ruby:2.7-slim-buster
+
+ARG UID=991
+ARG GID=991
+
+ENV RAILS_SERVE_STATIC_FILES=true \
+    RAILS_ENV=production NODE_ENV=production
+
+EXPOSE 3000 4000
+
+COPY --from=jemalloc /rootfs /
+
+WORKDIR /mastodon
+
+COPY Gemfile Gemfile.lock package.json yarn.lock .yarnclean /mastodon/
+
+RUN apt-get update \
+&& apt-get -y install --no-install-recommends curl gnupg2 \
+&& curl -sL https://deb.nodesource.com/setup_12.x | bash - \
+&& curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add - \
+&& echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list \
+&& apt-get update \
+&& apt-get -y install --no-install-recommends build-essential git libicu-dev libidn11-dev libpq-dev libprotobuf-dev protobuf-compiler \
+&& apt-get -y install --no-install-recommends libssl1.1 libpq5 imagemagick ffmpeg libjemalloc2 libicu63 libprotobuf17 libidn11 libyaml-0-2 file ca-certificates tzdata libreadline7 gcc nodejs yarn shared-mime-info \
+&& bundle config set deployment 'true' \
+&& bundle config set without 'development test' \
+&& bundle install -j$(getconf _NPROCESSORS_ONLN) \
+&& yarn --pure-lockfile \
+&& yarn cache clean \
+&& apt-get -y remove --purge curl gnupg2 build-essential git libicu-dev libidn11-dev libpq-dev libprotobuf-dev protobuf-compiler \
+&& apt-get -y autoremove --purge \
+&& apt-get clean \
+&& rm -rf /var/lib/apt/lists/*
+
+RUN groupadd -g ${GID} mastodon && useradd -d /mastodon -s /bin/sh -g mastodon -u ${UID} mastodon \
+&& mkdir -p /mastodon/public/system /mastodon/public/assets /mastodon/public/packs \
+&& chown mastodon:mastodon /mastodon \
+&& chown -R mastodon:mastodon /mastodon/public
+
+COPY --chown=mastodon:mastodon . /mastodon
+
+VOLUME /mastodon/public/system /mastodon/public/assets /mastodon/public/packs
+
+USER mastodon
