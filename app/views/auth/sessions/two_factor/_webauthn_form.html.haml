@@ -10,7 +10,8 @@
   %p.hint= t('simple_form.hints.sessions.webauthn')
 
   .actions
-    = f.button :button, t('auth.use_security_key'), class: 'js-webauthn', type: :submit
+    = render partial: 'auth/shared/recaptcha'
+    = f.button :button, t('auth.use_security_key'), class: 'js-webauthn', type: :submit, class: 'recaptcha', disabled: true
 
   .form-footer
     %p= t('auth.dont_have_your_security_key')
