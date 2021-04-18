@@ -1,0 +1,32 @@
+name: Building Images
+on:
+  push:
+    branches:
+      - production
+
+jobs:
+  pre-compile:
+    name: Pre-Compile Assets
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@master
+      - name: Build Prep-Image and Creating Assets
+        run: |
+          docker build . -f Dockerfile.slim-buster -t prep-image
+          docker run -e RAILS_ENV=production -e OTP_SECRET=precompile_placeholder -e SECRET_KEY_BASE=precompile_placeholder -e SENTRY_DSN=precompile_placeholder --name prep-container prep-image bundle exec rake assets:precompile
+      - name: Build proxy image
+        run: |
+          docker cp prep-container:/mastodon/public .
+          docker build . -f Dockerfile.proxy -t ${{secrets.REGISTORY_PATH}}/mastodon-proxy:latest-amd64
+          docker tag ${{secrets.REGISTORY_PATH}}/mastodon-proxy:latest-amd64 ${{secrets.REGISTORY_PATH}}/mastodon-proxy:$(echo ${GITHUB_SHA}|head -c7)-amd64
+      - name: Build mastodon image
+        run: |
+          docker build . -f Dockerfile.slim-buster -t ${{secrets.REGISTORY_PATH}}/mastodon:latest-amd64
+          docker tag ${{secrets.REGISTORY_PATH}}/mastodon:latest-amd64 ${{secrets.REGISTORY_PATH}}/mastodon:$(echo ${GITHUB_SHA}|head -c7)-amd64
+      - name: Upload image
+        run: |
+          docker login -u ${{secrets.REGISTORY_USER}} -p ${{secrets.REGISTORY_PASS}}
+          docker push ${{secrets.REGISTORY_PATH}}/mastodon:latest-amd64
+          docker push ${{secrets.REGISTORY_PATH}}/mastodon:$(echo ${GITHUB_SHA}|head -c7)-amd64
+          docker push ${{secrets.REGISTORY_PATH}}/mastodon-proxy:latest-amd64
+          docker push ${{secrets.REGISTORY_PATH}}/mastodon-proxy:$(echo ${GITHUB_SHA}|head -c7)-amd64
