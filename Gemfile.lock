@@ -1,3 +1,13 @@
+GIT
+  remote: https://github.com/yukimochi/chewy.git
+  revision: ac0e4c98461546e97cbacf2cf2622069b9621ee7
+  branch: es7-compatibility
+  specs:
+    chewy (5.2.0)
+      activesupport (>= 5.2)
+      elasticsearch (>= 7.0.0)
+      elasticsearch-dsl
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -146,10 +156,6 @@ GEM
       activesupport
     cbor (0.5.9.6)
     charlock_holmes (0.7.7)
-    chewy (5.2.0)
-      activesupport (>= 5.2)
-      elasticsearch (>= 2.0.0)
-      elasticsearch-dsl
     chunky_png (1.3.15)
     cld3 (3.4.2)
       ffi (>= 1.1.0, < 1.16.0)
@@ -196,13 +202,13 @@ GEM
       railties (>= 3.2)
     e2mmap (0.1.0)
     ed25519 (1.2.4)
-    elasticsearch (7.10.1)
-      elasticsearch-api (= 7.10.1)
-      elasticsearch-transport (= 7.10.1)
-    elasticsearch-api (7.10.1)
+    elasticsearch (7.12.0)
+      elasticsearch-api (= 7.12.0)
+      elasticsearch-transport (= 7.12.0)
+    elasticsearch-api (7.12.0)
       multi_json
     elasticsearch-dsl (0.1.9)
-    elasticsearch-transport (7.10.1)
+    elasticsearch-transport (7.12.0)
       faraday (~> 1)
       multi_json
     encryptor (3.0.0)
@@ -692,7 +698,7 @@ DEPENDENCIES
   capistrano-yarn (~> 2.0)
   capybara (~> 3.35)
   charlock_holmes (~> 0.7.7)
-  chewy (~> 5.2)
+  chewy!
   cld3 (~> 3.4.2)
   climate_control (~> 0.2)
   color_diff (~> 0.1)
