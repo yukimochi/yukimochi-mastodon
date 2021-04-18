@@ -25,7 +25,8 @@
       = f.input :agreement, as: :boolean, wrapper: :with_label, label: t('auth.checkbox_agreement_html', rules_path: about_more_path, terms_path: terms_path), required: true, disabled: disabled
 
     .actions
-      = f.button :button, sign_up_message, type: :submit, class: 'button button-primary', disabled: disabled
+      = render partial: 'auth/shared/recaptcha'
+      = f.button :button, sign_up_message, type: :submit, class: 'button button-primary', disabled: closed_registrations?
 
   - if show_message
     .simple_form__overlay-area__overlay
