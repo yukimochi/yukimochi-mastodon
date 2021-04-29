@@ -32,7 +32,7 @@ gem 'browser'
 gem 'charlock_holmes', '~> 0.7.7'
 gem 'iso-639'
 gem 'chewy', git: 'https://github.com/yukimochi/chewy.git', branch: 'es7-compatibility'
-gem 'cld3', '~> 3.4.1'
+gem 'cld3', '~> 3.4.2'
 gem 'devise', '~> 4.7'
 gem 'devise-two-factor', '~> 4.0'
 
@@ -137,7 +137,7 @@ group :development do
   gem 'letter_opener', '~> 1.7'
   gem 'letter_opener_web', '~> 1.4'
   gem 'memory_profiler'
-  gem 'rubocop', '~> 1.12', require: false
+  gem 'rubocop', '~> 1.13', require: false
   gem 'rubocop-rails', '~> 2.9', require: false
   gem 'brakeman', '~> 5.0', require: false
   gem 'bundler-audit', '~> 0.8', require: false
