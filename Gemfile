@@ -33,7 +33,7 @@ gem 'charlock_holmes', '~> 0.7.7'
 gem 'iso-639'
 gem 'chewy', git: 'https://github.com/yukimochi/chewy.git', branch: 'es7-compatibility'
 gem 'cld3', '~> 3.4.2'
-gem 'devise', '~> 4.7'
+gem 'devise', '~> 4.8'
 gem 'devise-two-factor', '~> 4.0'
 
 group :pam_authentication, optional: true do
