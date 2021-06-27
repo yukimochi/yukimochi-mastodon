@@ -1,4 +1,4 @@
-FROM caddy:2.4.1
+FROM caddy:2.4.3
 
 WORKDIR /usr/share/caddy
 EXPOSE 80 443
