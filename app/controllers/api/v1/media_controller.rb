@@ -27,17 +27,7 @@ class Api::V1::MediaController < Api::BaseController
   private
 
   def status_code_for_media_attachment
-    begin
-      Timeout.timeout(10) do
-        while @media_attachment.not_processed? do
-          sleep(0.5)
-          @media_attachment.reload
-        end
-      end
-      200
-    rescue Timeout::Error
-      206
-    end
+    @media_attachment.not_processed? ? 206 : 200
   end
 
   def set_media_attachment

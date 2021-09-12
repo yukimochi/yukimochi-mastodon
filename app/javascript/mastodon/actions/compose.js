@@ -256,7 +256,7 @@ export function uploadCompose(files) {
                 if (response.status === 200) {
                   dispatch(uploadComposeSuccess(response.data, f));
                 } else if (response.status === 206) {
-                  setTimeout(() => poll(), 10 * 1000);
+                  setTimeout(() => poll(), 1000);
                 }
               }).catch(error => dispatch(uploadComposeFail(error)));
             };
