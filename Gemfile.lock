@@ -559,7 +559,7 @@ GEM
     semantic_range (3.0.0)
     sentry-raven (3.1.2)
       faraday (>= 1.0)
-    sidekiq (6.2.2)
+    sidekiq (6.3.1)
       connection_pool (>= 2.2.2)
       rack (~> 2.0)
       redis (>= 4.2.0)
@@ -775,7 +775,7 @@ DEPENDENCIES
   sanitize (~> 6.0)
   scenic (~> 1.5)
   sentry-raven
-  sidekiq (~> 6.2)
+  sidekiq (~> 6.3)
   sidekiq-bulk (~> 0.2.0)
   sidekiq-scheduler (~> 3.1)
   sidekiq-unique-jobs (~> 7.1)
