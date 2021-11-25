@@ -38,7 +38,7 @@ class MediaAttachment < ApplicationRecord
 
   MAX_DESCRIPTION_LENGTH = 1_500
 
-  IMAGE_FILE_EXTENSIONS = %w(.jpg .jpeg .png .gif).freeze
+  IMAGE_FILE_EXTENSIONS = %w(.jpg .jpeg .heic .webp .png .gif).freeze
   VIDEO_FILE_EXTENSIONS = %w(.webm .mp4 .m4v .mov).freeze
   AUDIO_FILE_EXTENSIONS = %w(.ogg .oga .mp3 .wav .flac .opus .aac .m4a .3gp .wma).freeze
 
@@ -49,10 +49,11 @@ class MediaAttachment < ApplicationRecord
     small
   ).freeze
 
-  IMAGE_MIME_TYPES             = %w(image/jpeg image/png image/gif).freeze
-  VIDEO_MIME_TYPES             = %w(video/webm video/mp4 video/quicktime video/ogg).freeze
-  VIDEO_CONVERTIBLE_MIME_TYPES = %w(video/webm video/quicktime).freeze
-  AUDIO_MIME_TYPES             = %w(audio/wave audio/wav audio/x-wav audio/x-pn-wave audio/ogg audio/vorbis audio/mpeg audio/mp3 audio/webm audio/flac audio/aac audio/m4a audio/x-m4a audio/mp4 audio/3gpp video/x-ms-asf).freeze
+  IMAGE_MIME_TYPES               = %w(image/jpeg image/heic image/webp image/png image/gif).freeze
+  IMAGE_NORMALIZATION_MIME_TYPES = %w(image/heic image/webp).freeze
+  VIDEO_MIME_TYPES               = %w(video/webm video/mp4 video/quicktime video/ogg).freeze
+  VIDEO_CONVERTIBLE_MIME_TYPES   = %w(video/webm video/quicktime).freeze
+  AUDIO_MIME_TYPES               = %w(audio/wave audio/wav audio/x-wav audio/x-pn-wave audio/ogg audio/vorbis audio/mpeg audio/mp3 audio/webm audio/flac audio/aac audio/m4a audio/x-m4a audio/mp4 audio/3gpp video/x-ms-asf).freeze
 
   BLURHASH_OPTIONS = {
     x_comp: 4,
@@ -66,6 +67,21 @@ class MediaAttachment < ApplicationRecord
     }.freeze,
 
     small: {
+      pixels: 160_000, # 400x400px
+      file_geometry_parser: FastGeometryParser,
+      blurhash: BLURHASH_OPTIONS,
+    }.freeze,
+  }.freeze
+
+  IMAGE_NORMALIZATION_STYLES = {
+    original: {
+      format: 'png',
+      pixels: 2_073_600, # 1920x1080px
+      file_geometry_parser: FastGeometryParser,
+    }.freeze,
+
+    small: {
+      format: 'png',
       pixels: 160_000, # 400x400px
       file_geometry_parser: FastGeometryParser,
       blurhash: BLURHASH_OPTIONS,
@@ -149,10 +165,10 @@ class MediaAttachment < ApplicationRecord
   }.freeze
 
   GLOBAL_CONVERT_OPTIONS = {
-    all: '-quality 90 -strip +set modify-date +set create-date',
+    all: '-quality 75 -strip +set modify-date +set create-date',
   }.freeze
 
-  IMAGE_LIMIT = 10.megabytes
+  IMAGE_LIMIT = 20.megabytes
   VIDEO_LIMIT = 40.megabytes
 
   MAX_VIDEO_MATRIX_LIMIT = 2_304_000 # 1920x1200px
@@ -274,7 +290,11 @@ class MediaAttachment < ApplicationRecord
       if attachment.instance.file_content_type == 'image/gif' || VIDEO_CONVERTIBLE_MIME_TYPES.include?(attachment.instance.file_content_type)
         VIDEO_CONVERTED_STYLES
       elsif IMAGE_MIME_TYPES.include?(attachment.instance.file_content_type)
-        IMAGE_STYLES
+        if IMAGE_NORMALIZATION_MIME_TYPES.include?(attachment.instance.file_content_type)
+          IMAGE_NORMALIZATION_STYLES
+        else
+          IMAGE_STYLES
+        end
       elsif VIDEO_MIME_TYPES.include?(attachment.instance.file_content_type)
         VIDEO_STYLES
       else
