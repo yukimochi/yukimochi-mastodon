@@ -1,0 +1,87 @@
+version: 2.1
+
+jobs:
+  build-assets:
+    machine:
+      image: ubuntu-2204:current
+    resource_class: large
+    environment:
+      DOCKER_CLI_EXPERIMENTAL: true
+    steps:
+      - checkout
+      - run: |
+          docker login -u $DOCKERHUB_USERNAME -p $DOCKERHUB_PASSWORD
+          docker buildx create --name local-builder
+          docker buildx build -f Dockerfile.slim -t pre-image .
+          docker run -e RAILS_ENV=production -e OTP_SECRET=precompile_placeholder -e SECRET_KEY_BASE=precompile_placeholder -e SENTRY_DSN= --name pre-container pre-image bundle exec rake assets:precompile
+          docker cp pre-container:/mastodon/public .
+      - persist_to_workspace:
+          root: .
+          paths:
+            - public
+
+  build-amd64:
+    machine:
+      image: ubuntu-2204:current
+    resource_class: large
+    environment:
+      DOCKER_CLI_EXPERIMENTAL: true
+    steps:
+      - checkout
+      - attach_workspace:
+          at: .
+      - run: |
+          docker login -u $DOCKERHUB_USERNAME -p $DOCKERHUB_PASSWORD
+          docker buildx create --name local-builder
+          docker buildx build -f Dockerfile.proxy -t ${DOCKERHUB_USERNAME}/mastodon-proxy:circleci-<< pipeline.number >>-amd64 --push .
+          docker buildx build -f Dockerfile.slim -t ${DOCKERHUB_USERNAME}/mastodon:circleci-<< pipeline.number >>-amd64 --push .
+
+  build-arm64:
+    machine:
+      image: ubuntu-2204:current
+    resource_class: arm.large
+    environment:
+      DOCKER_CLI_EXPERIMENTAL: true
+    steps:
+      - checkout
+      - attach_workspace:
+          at: .
+      - run: |
+          docker login -u $DOCKERHUB_USERNAME -p $DOCKERHUB_PASSWORD
+          docker buildx create --name local-builder
+          docker buildx build -f Dockerfile.proxy -t ${DOCKERHUB_USERNAME}/mastodon-proxy:circleci-<< pipeline.number >>-arm64 --push .
+          docker buildx build -f Dockerfile.slim -t ${DOCKERHUB_USERNAME}/mastodon:circleci-<< pipeline.number >>-arm64 --push .
+
+  push-manifest:
+    docker:
+      - image: cimg/base:edge
+        auth:
+          username: $DOCKERHUB_USERNAME
+          password: $DOCKERHUB_PASSWORD
+    steps:
+      - setup_remote_docker
+      - run: |
+          docker login -u $DOCKERHUB_USERNAME -p $DOCKERHUB_PASSWORD
+          docker manifest create ${DOCKERHUB_USERNAME}/mastodon-proxy:circleci-<< pipeline.number >> ${DOCKERHUB_USERNAME}/mastodon-proxy:circleci-<< pipeline.number >>-amd64 ${DOCKERHUB_USERNAME}/mastodon-proxy:circleci-<< pipeline.number >>-arm64
+          docker manifest create ${DOCKERHUB_USERNAME}/mastodon:circleci-<< pipeline.number >> ${DOCKERHUB_USERNAME}/mastodon:circleci-<< pipeline.number >>-amd64 ${DOCKERHUB_USERNAME}/mastodon:circleci-<< pipeline.number >>-arm64
+          docker manifest push ${DOCKERHUB_USERNAME}/mastodon-proxy:circleci-<< pipeline.number >>
+          docker manifest push ${DOCKERHUB_USERNAME}/mastodon:circleci-<< pipeline.number >>
+
+workflows:
+  version: 2
+  build:
+    jobs:
+      - build-assets:
+          filters:
+            branches:
+              only: production
+      - build-amd64:
+          requires:
+            - build-assets
+      - build-arm64:
+          requires:
+            - build-assets
+      - push-manifest:
+          requires:
+            - build-amd64
+            - build-arm64

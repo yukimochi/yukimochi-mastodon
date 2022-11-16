@@ -1,0 +1,69 @@
+FROM ruby:3.2.3-alpine as mastodon-library
+
+ENV NODE_OPTIONS=--openssl-legacy-provider
+WORKDIR /mastodon
+
+RUN apk add -U build-base ca-certificates wget python3 git icu-dev libidn-dev libpq-dev shared-mime-info nodejs npm
+
+RUN npm install -g npm@latest && \
+npm install -g yarn && \
+gem install bundler
+
+COPY Gemfile* package.json yarn.lock /mastodon/
+
+RUN bundle config set --local deployment 'true' && \
+bundle config set --local without 'development test' && \
+bundle config set silence_root_warning true && \
+bundle install -j"$(nproc)" && \
+yarn install --pure-lockfile
+
+FROM alpine:3.16 as jemalloc
+
+WORKDIR /root
+
+RUN apk add -U build-base autoconf
+
+RUN wget -O - https://github.com/jemalloc/jemalloc/archive/refs/tags/5.3.0.tar.gz | tar xz --strip-components=1 && \
+./autogen.sh && \
+make -j
+
+FROM ruby:3.2.3-alpine
+
+ARG UID=991
+ARG GID=991
+ARG ARCH
+
+ENV NODE_OPTIONS=--openssl-legacy-provider
+WORKDIR /mastodon
+
+RUN addgroup -g ${GID} -S mastodon && \
+adduser -G mastodon -D -h /mastodon -s /bin/sh -u ${UID} mastodon && \
+chown mastodon:mastodon /mastodon
+
+RUN apk add -U whois wget procps openssl-dev libpq imagemagick ffmpeg icu icu-libs libidn yaml-dev file ca-certificates tzdata readline-dev gcc tini nodejs npm
+RUN sed -i '/<\/policymap>/i \ \ <policy domain="coder" rights="read|write" pattern="{AVIF}" \/>' /etc/ImageMagick-7/policy.xml
+
+RUN npm install -g npm@latest && \
+npm install -g yarn && \
+gem install bundler
+
+COPY Gemfile* package.json yarn.lock /mastodon/
+
+COPY --chown=mastodon:mastodon . /mastodon/
+COPY --from=mastodon-library --chown=mastodon:mastodon /usr/local/bundle /usr/local/bundle/
+COPY --from=mastodon-library --chown=mastodon:mastodon /mastodon /mastodon/
+COPY --from=jemalloc /root/lib /usr/local/lib/
+
+USER mastodon
+
+RUN mkdir -p /mastodon/public/system /mastodon/public/assets /mastodon/public/packs
+
+ENV RAILS_ENV=production
+ENV NODE_ENV=production
+
+ENV RAILS_SERVE_STATIC_FILES=true
+ENV BIND="0.0.0.0"
+
+VOLUME /mastodon/public/system /mastodon/public/assets /mastodon/public/packs
+
+EXPOSE 3000 4000
