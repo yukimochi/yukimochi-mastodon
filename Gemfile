@@ -100,6 +100,13 @@ gem 'json-ld'
 gem 'json-ld-preloaded', '~> 3.2'
 gem 'rdf-normalize', '~> 0.5'
 
+gem 'sentry-ruby'
+gem 'sentry-rails'
+gem 'sentry-sidekiq'
+gem 'sentry-delayed_job'
+gem 'sentry-resque'
+gem 'sentry-opentelemetry'
+
 gem 'private_address_check', '~> 0.5'
 
 group :test do
