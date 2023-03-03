@@ -102,6 +102,13 @@ gem 'json-ld'
 gem 'json-ld-preloaded', '~> 3.2'
 gem 'rdf-normalize', '~> 0.5'
 
+gem 'sentry-ruby'
+gem 'sentry-rails'
+gem 'sentry-sidekiq'
+gem 'sentry-delayed_job'
+gem 'sentry-resque'
+gem 'sentry-opentelemetry'
+
 gem 'prometheus_exporter', '~> 2.2', require: false
 
 gem 'opentelemetry-api', '~> 1.11.0'

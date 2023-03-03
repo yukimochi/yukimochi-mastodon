@@ -366,6 +366,7 @@ RUN \
   ldconfig; \
   # Use Ruby on Rails to create Mastodon assets
   SECRET_KEY_BASE_DUMMY=1 \
+  SENTRY_DSN=1 \
   bundle exec rails assets:precompile; \
   # Cleanup temporary files
   rm -fr /opt/mastodon/tmp;
