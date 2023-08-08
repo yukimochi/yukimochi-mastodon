@@ -728,7 +728,7 @@ vi:
         preamble: Thương hiệu máy chủ của bạn phân biệt nó với các máy chủ khác trong mạng. Thông tin này có thể được hiển thị trên nhiều môi trường khác nhau, chẳng hạn như giao diện web của Mastodon, các ứng dụng gốc, trong bản xem trước liên kết trên các trang web khác và trong các ứng dụng nhắn tin, v.v. Vì lý do này, cách tốt nhất là giữ cho thông tin này rõ ràng, ngắn gọn và súc tích.
         title: Thương hiệu
       captcha_enabled:
-        desc_html: Điều này phụ thuộc vào các mã lệnh bên ngoài từ hCaptcha, đây có thể là mối lo ngại về bảo mật và quyền riêng tư. Thêm vào đó, <strong>điều này có thể làm cho quá trình đăng ký khó hơn đối với một số người (đặc biệt là người khuyết tật)</strong>. Vì những lý do này, vui lòng xem xét các biện pháp thay thế như duyệt đăng ký thủ công hoặc tạo thư mời.
+        desc_html: Điều này phụ thuộc vào các mã lệnh bên ngoài từ Cloudflare Turnstile, đây có thể là mối lo ngại về bảo mật và quyền riêng tư. Thêm vào đó, <strong>điều này có thể làm cho quá trình đăng ký khó hơn đối với một số người (đặc biệt là người khuyết tật)</strong>. Vì những lý do này, vui lòng xem xét các biện pháp thay thế như duyệt đăng ký thủ công hoặc tạo thư mời.
         title: Yêu cầu người dùng mới dùng CAPTCHA để xác minh tài khoản của họ
       content_retention:
         preamble: Kiểm soát cách lưu trữ nội dung cá nhân trong Mastodon.

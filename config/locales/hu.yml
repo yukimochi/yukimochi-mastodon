@@ -742,7 +742,7 @@ hu:
         preamble: A kiszolgáló márkajelzése különbözteti meg a hálózat többi kiszolgálójától. Ez az információ számos környezetben megjelenhet, például a Mastodon webes felületén, natív alkalmazásokban, más weboldalakon és üzenetküldő alkalmazásokban megjelenő hivatkozások előnézetben stb. Ezért a legjobb, ha ez az információ világos, rövid és tömör.
         title: Branding
       captcha_enabled:
-        desc_html: Ez hCaptcha-ból származó külső scripteket használ, mely biztonsági vagy adatvédelmi résnek bizonyulhat. Ezen kívül ez <strong>a regisztrációs folyamatot jelentősen megnehezítheti bizonyos (kifejezetten különleges szükségletű) emberek számára</strong>. Emiatt fontold meg más módszerek, mint pl. jóváhagyás-alapú vagy meghívásalapú regisztráció használatát.
+        desc_html: Ez Cloudflare Turnstile-ból származó külső scripteket használ, mely biztonsági vagy adatvédelmi résnek bizonyulhat. Ezen kívül ez <strong>a regisztrációs folyamatot jelentősen megnehezítheti bizonyos (kifejezetten különleges szükségletű) emberek számára</strong>. Emiatt fontold meg más módszerek, mint pl. jóváhagyás-alapú vagy meghívásalapú regisztráció használatát.
         title: Az új felhasználóknak egy CAPTCHA-t kell megoldaniuk, hogy megerősítsék a fiókjuk regisztrációját
       content_retention:
         preamble: Felhasználók által generált tartalom Mastodonon való tárolásának szabályozása.

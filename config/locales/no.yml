@@ -742,7 +742,7 @@
         preamble: Serverens merkevarebygging skiller den fra andre servere i nettverket. Denne informasjonen kan vises på tvers av en rekke miljøer, for eksempel Mastodons webgrensesnitt, native applikasjoner, i forhåndsvisning av lenker på andre nettsteder og i meldingsapper, osv. Av denne grunn er det best å holde denne informasjonen klar, kort og kortfattet.
         title: Merkevare
       captcha_enabled:
-        desc_html: Dette er avhengig av eksterne skript fra hCaptcha, som kan være et sikkerhets- og personvernproblem.<strong> I tillegg kan dette gjøre registreringsprosessen betydelig mindre tilgjengelig for noen (spesielt funksjonshemmede) personer</strong>. Av disse grunnene bør du vurdere alternative tiltak som godkjenningsbasert eller invitasjonsbasert registrering.
+        desc_html: Dette er avhengig av eksterne skript fra Cloudflare Turnstile, som kan være et sikkerhets- og personvernproblem.<strong> I tillegg kan dette gjøre registreringsprosessen betydelig mindre tilgjengelig for noen (spesielt funksjonshemmede) personer</strong>. Av disse grunnene bør du vurdere alternative tiltak som godkjenningsbasert eller invitasjonsbasert registrering.
         title: Krev at nye brukere løser en CAPTCHA for å bekrefte kontoen sin
       content_retention:
         preamble: Kontroller hvordan brukergenerert innhold lagres i Mastodon.

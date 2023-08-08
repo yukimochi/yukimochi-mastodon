@@ -25,6 +25,14 @@ GIT
       nokogiri (~> 1.5)
       omniauth (>= 1.2, < 3)
 
+GIT
+  remote: https://github.com/yukimochi/hcaptcha-turnstile.git
+  revision: 939c5fd6b2011a90a1e3168f845aeac8208b89e3
+  tag: v8.0.2
+  specs:
+    hcaptcha (8.0.2)
+      json
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -333,8 +341,6 @@ GEM
       sysexits (~> 1.1)
     hashdiff (1.0.1)
     hashie (5.0.0)
-    hcaptcha (7.1.0)
-      json
     highline (2.1.0)
     hiredis (0.6.3)
     hkdf (0.3.0)
@@ -898,7 +904,7 @@ DEPENDENCIES
   fuubar (~> 2.5)
   haml-rails (~> 2.0)
   haml_lint
-  hcaptcha (~> 7.1)
+  hcaptcha!
   hiredis (~> 0.6)
   htmlentities (~> 4.3)
   http (~> 5.1)

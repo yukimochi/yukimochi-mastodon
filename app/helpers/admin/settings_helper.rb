@@ -2,6 +2,6 @@
 
 module Admin::SettingsHelper
   def captcha_available?
-    ENV['HCAPTCHA_SECRET_KEY'].present? && ENV['HCAPTCHA_SITE_KEY'].present?
+    ENV['TURNSTILE_SECRET_KEY'].present? && ENV['TURNSTILE_SITE_KEY'].present?
   end
 end

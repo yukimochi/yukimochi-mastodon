@@ -742,7 +742,7 @@ et:
         preamble: Serveri bränding eristab seda teistest serveritest võrgus. Seda teavet võidakse kuvada erinevates keskkondades, näiteks Mastodoni veebiliideses, rakendustes, viitade eelvaadetes teistel veebisaitidel, sõnumsiderakendustes jne. Sel põhjusel on kõige parem hoida see teave selge, lühike ja ülevaatlik.
         title: Märgistus
       captcha_enabled:
-        desc_html: See tugineb välistele hCaptcha skriptidele, mis võib olla turvalisuse ja privaatsuse probleem. Lisaks <strong>võib see muuta registreerimisprotsessi mõnede inimeste (eriti puudega inimeste) jaoks, oluliselt vähem ligipääsetavaks.</strong> Neil põhjustel kaalu palun teisi võimalusi, näiteks kinnitamis- või kutsepõhiseid registreerimislahendusi.
+        desc_html: See tugineb välistele Cloudflare Turnstile skriptidele, mis võib olla turvalisuse ja privaatsuse probleem. Lisaks <strong>võib see muuta registreerimisprotsessi mõnede inimeste (eriti puudega inimeste) jaoks, oluliselt vähem ligipääsetavaks.</strong> Neil põhjustel kaalu palun teisi võimalusi, näiteks kinnitamis- või kutsepõhiseid registreerimislahendusi.
         title: Nõua uutelt kasutajatelt konto kinnitamiseks CAPTCHA lahendamist
       content_retention:
         preamble: Määra, kuidas kasutajate loodud sisu Mastodonis talletatakse.

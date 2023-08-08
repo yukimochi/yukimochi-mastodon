@@ -741,7 +741,7 @@ eo:
         preamble: Via markeco de servilo malsamigas ĝin de aliaj servilojn en la reto. Do, la informo devus esti simpla kaj mallonga.
         title: Markeco
       captcha_enabled:
-        desc_html: Ĉi tio dependas de eksteraj hCaptcha-skriptoj, kiuj povas esti problemo pri sekureco kaj privateco. Ankaŭ, <strong>ĝi povas igi la registran procezon multe malpli alirebla por iuj homoj (precipe homoj kun handikapoj)</strong>. Pro ĉi tiuj kialoj, bonvolu konsideri alternativajn rimedojn kiel registradon per aprobo aŭ per invito.
+        desc_html: Ĉi tio dependas de eksteraj Cloudflare Turnstile-skriptoj, kiuj povas esti problemo pri sekureco kaj privateco. Ankaŭ, <strong>ĝi povas igi la registran procezon multe malpli alirebla por iuj homoj (precipe homoj kun handikapoj)</strong>. Pro ĉi tiuj kialoj, bonvolu konsideri alternativajn rimedojn kiel registradon per aprobo aŭ per invito.
         title: Postuli novajn uzantojn solvi CAPTCHA por konfirmi sian konton
       content_retention:
         preamble: Regi kiel uzantogenerita enhavo konservitis en Mastodon.

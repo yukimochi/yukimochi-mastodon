@@ -742,7 +742,7 @@ it:
         preamble: 'Il marchio del tuo server lo differenzia dagli altri server nella rete. Queste informazioni possono essere visualizzate in una varietà di ambienti, come: l''interfaccia web di Mastodon, le applicazioni native, nelle anteprime dei collegamenti su altri siti Web e all''interno delle app di messaggistica e così via. Per questo motivo, è meglio mantenere queste informazioni chiare, brevi e concise.'
         title: Marchio
       captcha_enabled:
-        desc_html: Questo si basa su script esterni da hCaptcha, che possono rappresentare un problema di sicurezza e privacy. Inoltre, <strong>questo può rendere il processo di registrazione significativamente meno accessibile ad alcune persone (soprattutto disabili)</strong>. Per questi motivi, prendi in considerazione misure alternative come la registrazione basata su approvazione o su invito.
+        desc_html: Questo si basa su script esterni da Cloudflare Turnstile, che possono rappresentare un problema di sicurezza e privacy. Inoltre, <strong>questo può rendere il processo di registrazione significativamente meno accessibile ad alcune persone (soprattutto disabili)</strong>. Per questi motivi, prendi in considerazione misure alternative come la registrazione basata su approvazione o su invito.
         title: Richiedi ai nuovi utenti di risolvere un CAPTCHA per confermare il loro account
       content_retention:
         preamble: Controlla come vengono memorizzati i contenuti generati dall'utente in Mastodon.

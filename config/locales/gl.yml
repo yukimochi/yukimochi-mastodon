@@ -742,7 +742,7 @@ gl:
         preamble: A personalización do teu servidor diferénciao doutros servidores da rede. A información podería mostrarse en diversos entornos, como a interface web de Mastodon, aplicacións nativas, vista previa das ligazóns noutras webs e apps de mensaxería, e similares. Debido a isto é recomendable que a información sexa clara, curta e concisa.
         title: Personalización
       captcha_enabled:
-        desc_html: Ten dependencia de scripts externos desde hCaptcha, que podería ser un problema de seguridade e privacidade. Ademáis, <strong>pode diminuír a accesiblidade para algunhas persoas (principalmente as discapacitadas)</strong>. Por estas razóns, considera medidas alternativas como o rexistro por convite e a aprobación manual das contas.
+        desc_html: Ten dependencia de scripts externos desde Cloudflare Turnstile, que podería ser un problema de seguridade e privacidade. Ademáis, <strong>pode diminuír a accesiblidade para algunhas persoas (principalmente as discapacitadas)</strong>. Por estas razóns, considera medidas alternativas como o rexistro por convite e a aprobación manual das contas.
         title: Pedirlle ás novas usuarias resolver un CAPTCHA para confirmar a súa conta
       content_retention:
         preamble: Controla como se gardan en Mastodon os contidos creados polas usuarias.

@@ -742,7 +742,7 @@ fi:
         preamble: Palvelimesi brändäys erottaa sen muista verkon palvelimista. Nämä tiedot voivat näkyä monissa eri ympäristöissä, kuten Mastodonin verkkokäyttöliittymässä, natiivisovelluksissa, linkkien esikatseluissa muilla sivustoilla, viestintäsovelluksissa ja niin edelleen. Siksi nämä tiedot kannattaa pitää selkeinä, lyhyinä ja ytimekkäinä.
         title: Brändäys
       captcha_enabled:
-        desc_html: Tämä perustuu ulkoisiin skripteihin hCaptchasta, mikä voi olla turvallisuus- ja yksityisyysongelma. Lisäksi <strong>tämä voi tehdä rekisteröinnin ihmisille huomattavasti (erityisesti vammaisten) helpommaksi</strong>. Harkitse vaihtoehtoisia toimenpiteitä, kuten hyväksymisperusteista tai kutsupohjaista rekisteröintiä.
+        desc_html: Tämä perustuu ulkoisiin skripteihin Cloudflare Turnstilesta, mikä voi olla turvallisuus- ja yksityisyysongelma. Lisäksi <strong>tämä voi tehdä rekisteröinnin ihmisille huomattavasti (erityisesti vammaisten) helpommaksi</strong>. Harkitse vaihtoehtoisia toimenpiteitä, kuten hyväksymisperusteista tai kutsupohjaista rekisteröintiä.
         title: Vaadi uusia käyttäjiä vahvistaamaan tilinsä ratkaisemalla CAPTCHA-vahvistus
       content_retention:
         preamble: Määritä, miten käyttäjän luoma sisältö tallennetaan Mastodoniin.

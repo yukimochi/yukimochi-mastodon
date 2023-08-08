@@ -742,7 +742,7 @@ fy:
         preamble: De branding fan jo server lit sjen hoe’t it fan oare servers yn it netwurk ferskilt. Dizze ynformaasje wurdt op ferskate plakken toand, lykas yn de webomjouwing fan Mastodon, yn mobile apps, yn foarfertoaningen op oare websites en berjochte-apps, ensfh. Dêrom is it wichtich om de ynformaasje helder, koart en bûnich te hâlden.
         title: Branding
       captcha_enabled:
-        desc_html: Dit is ôfhinklik fan eksterne scripts fan hCaptcha, wat feilichheids- en privacyrisiko’s meibringe kin. Boppe dat kin <strong>dit it registraasjeproses bot minder tagonklik meitsje foar guon (foaral handicapte) minsken</strong>. Om dizze redenen kinne jo it beste alternative maatregels oerweagje, lykas registraasje op basis fan goedkarring of op útnûging.
+        desc_html: Dit is ôfhinklik fan eksterne scripts fan Cloudflare Turnstile, wat feilichheids- en privacyrisiko’s meibringe kin. Boppe dat kin <strong>dit it registraasjeproses bot minder tagonklik meitsje foar guon (foaral handicapte) minsken</strong>. Om dizze redenen kinne jo it beste alternative maatregels oerweagje, lykas registraasje op basis fan goedkarring of op útnûging.
         title: Nije brûkers moatte in CAPTCHA oplosse om harren account te befêstigjen
       content_retention:
         preamble: Tafersjoch hâlde op hoe’t berjochten en media fan brûkers op Mastodon bewarre wurde.

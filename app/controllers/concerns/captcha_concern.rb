@@ -10,7 +10,7 @@ module CaptchaConcern
   end
 
   def captcha_available?
-    ENV['HCAPTCHA_SECRET_KEY'].present? && ENV['HCAPTCHA_SITE_KEY'].present?
+    ENV['TURNSTILE_SECRET_KEY'].present? && ENV['TURNSTILE_SITE_KEY'].present?
   end
 
   def captcha_enabled?
@@ -49,8 +49,7 @@ module CaptchaConcern
     %w(script_src frame_src style_src connect_src).each do |directive|
       values = policy.send(directive)
 
-      values << 'https://hcaptcha.com' unless values.include?('https://hcaptcha.com') || values.include?('https:')
-      values << 'https://*.hcaptcha.com' unless values.include?('https://*.hcaptcha.com') || values.include?('https:')
+      values << 'https://challenges.cloudflare.com' unless values.include?('https://challenges.cloudflare.com') || values.include?('https:')
 
       policy.send(directive, *values)
     end

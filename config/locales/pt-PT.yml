@@ -742,7 +742,7 @@ pt-PT:
         preamble: A marca do seu servidor diferencia-a doutros servidores na rede. Essa informação pode ser exibida em vários contexos, como a interface na teia do Mastodon, aplicações nativas, visualizações de hiperligações noutros sites, em aplicações de mensagens, etc. Por esta razão, é melhor manter esta informação clara, curta e concisa.
         title: Marca
       captcha_enabled:
-        desc_html: Isto depende de scripts externos da hCaptcha, o que pode ser uma preocupação de segurança e privacidade. Além disso, <strong>isto pode tornar o processo de registo menos acessível para algumas pessoas (especialmente as com limitações físicas)</strong>. Por isso, considere medidas alternativas tais como registo mediante aprovação ou sob convite.
+        desc_html: Isto depende de scripts externos da Cloudflare Turnstile, o que pode ser uma preocupação de segurança e privacidade. Além disso, <strong>isto pode tornar o processo de registo menos acessível para algumas pessoas (especialmente as com limitações físicas)</strong>. Por isso, considere medidas alternativas tais como registo mediante aprovação ou sob convite.
         title: Requerer que novos utilizadores resolvam um CAPTCHA para confirmar a sua conta
       content_retention:
         preamble: Controle como o conteúdo gerado pelos utilizadores é armazenado no Mastodon.

@@ -742,7 +742,7 @@ fo:
         preamble: Brandingin av tínum ambætara skilir hann út frá øðrum ambætarum í netverkinum. Hesar upplýsingar kunnu vera vístar í nógvum ymiskum umhvørvum, so sum í vev-markamótinum hjá Mastodon, uppruna-appum, í undanvísingum av leinkjum á øðrum vevstøðum, í boðs-appum og so framvegis. Av hesi orsøk er tað best, um hesar upplýsingar eru klárar, stuttar og beinraknar.
         title: Branding
       captcha_enabled:
-        desc_html: Hetta er bundið at uttanhýsis skriptum frá hCaptcha, sum kann vera ein trygdar- og privatlívsváði. Harafturat, so <strong>kann hetta gera skrásetingartilgongdina munandi minni atkomuliga til summi (brekaði) fólk</strong>. Tískil eigur tú at umhugsa aðrar hættir sosum góðkenningar-grundaða ella innbjóðingar-grundaða skráseting.
+        desc_html: Hetta er bundið at uttanhýsis skriptum frá Cloudflare Turnstile, sum kann vera ein trygdar- og privatlívsváði. Harafturat, so <strong>kann hetta gera skrásetingartilgongdina munandi minni atkomuliga til summi (brekaði) fólk</strong>. Tískil eigur tú at umhugsa aðrar hættir sosum góðkenningar-grundaða ella innbjóðingar-grundaða skráseting.
         title: Set krav til nýggjar brúkarar at loysa eina CAPTHA fyri at vátta teirra kontu
       content_retention:
         preamble: Stýr hvussu brúkara-skapt tilfar er goymt í Mastodon.

@@ -798,7 +798,7 @@ cy:
         preamble: Mae brandio eich gweinydd yn ei wahaniaethu oddi wrth weinyddion eraill yn y rhwydwaith. Gall y wybodaeth hon gael ei dangos ar draws amrywiaeth o amgylcheddau, megis rhyngwyneb gwe Mastodon, rhaglenni brodorol, mewn rhagolygon cyswllt ar wefannau eraill ac o fewn apiau negeseuon, ac ati. Am y rheswm hwn, mae'n well cadw'r wybodaeth hon yn glir, yn fyr ac yn gryno.
         title: Brandio
       captcha_enabled:
-        desc_html: Mae hyn yn dibynnu ar sgriptiau allanol gan hCaptcha, a all fod yn bryder diogelwch a phreifatrwydd. Yn ogystal, <strong>gall hyn wneud y broses gofrestru yn llawer llai hygyrch i rai pobl (yn enwedig yr anabl)</strong>. Am y rhesymau hyn, ystyriwch fesurau eraill fel cofrestru ar sail cymeradwyaeth neu ar sail gwahoddiad.
+        desc_html: Mae hyn yn dibynnu ar sgriptiau allanol gan Cloudflare Turnstile, a all fod yn bryder diogelwch a phreifatrwydd. Yn ogystal, <strong>gall hyn wneud y broses gofrestru yn llawer llai hygyrch i rai pobl (yn enwedig yr anabl)</strong>. Am y rhesymau hyn, ystyriwch fesurau eraill fel cofrestru ar sail cymeradwyaeth neu ar sail gwahoddiad.
         title: Ei gwneud yn ofynnol i ddefnyddwyr newydd ddatrys CAPTCHA i gadarnhau eu cyfrif
       content_retention:
         preamble: Rheoli sut mae cynnwys sy'n cael ei gynhyrchu gan ddefnyddwyr yn cael ei storio yn Mastodon.

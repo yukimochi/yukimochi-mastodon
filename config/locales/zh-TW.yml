@@ -731,7 +731,7 @@ zh-TW:
         title: 品牌化
       captcha_enabled:
         desc_html: |-
-          此功能依賴於來自 hCaptcha 之外部腳本，其可能有安全及隱私顧慮。
+          此功能依賴於來自 Cloudflare Turnstile 之外部腳本，其可能有安全及隱私顧慮。
           此外，<strong>這將大幅降低註冊流程對某些族群之易用性，特別是無障礙需求人士</strong>。基於此因，請考慮其他替代性方案，例如審核制或是邀請制之註冊流程。
         title: 要求新使用者完成 CAPTCHA 挑戰以確認帳號
       content_retention:
