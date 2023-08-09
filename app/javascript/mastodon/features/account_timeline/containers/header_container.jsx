@@ -183,6 +183,16 @@ const mapDispatchToProps = (dispatch, { intl }) => ({
     }));
   },
 
+  onOpenHeader (account) {
+    dispatch(openModal({
+      modalType: 'IMAGE',
+      modalProps: {
+        src: account.get('header'),
+        alt: account.get('acct'),
+      },
+    }));
+  },
+
   onOpenURL (url, routerHistory, onFailure) {
     dispatch(openURL(url, routerHistory, onFailure));
   },

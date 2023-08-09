@@ -107,6 +107,7 @@ class Header extends ImmutablePureComponent {
     onChangeLanguages: PropTypes.func.isRequired,
     onInteractionModal: PropTypes.func.isRequired,
     onOpenAvatar: PropTypes.func.isRequired,
+    onOpenHeader: PropTypes.func.isRequired,
     onOpenURL: PropTypes.func.isRequired,
     intl: PropTypes.object.isRequired,
     domain: PropTypes.string.isRequired,
@@ -159,6 +160,13 @@ class Header extends ImmutablePureComponent {
     if (e.button === 0 && !(e.ctrlKey || e.metaKey)) {
       e.preventDefault();
       this.props.onOpenAvatar();
+    }
+  };
+
+  handleHeaderClick = e => {
+    if (e.button === 0 && !(e.ctrlKey || e.metaKey)) {
+      e.preventDefault();
+      this.props.onOpenHeader();
     }
   };
 
@@ -392,12 +400,12 @@ class Header extends ImmutablePureComponent {
             {!suspended && info}
           </div>
 
-          {!(suspended || hidden) && <img src={autoPlayGif ? account.get('header') : account.get('header_static')} alt='' className='parallax' />}
+          {!(suspended || hidden) && <img src={autoPlayGif ? account.get('header') : account.get('header_static')} alt='' className='parallax' onClick={this.handleHeaderClick}/>}
         </div>
 
         <div className='account__header__bar'>
           <div className='account__header__tabs'>
-            <a className='avatar' href={account.get('avatar')} rel='noopener noreferrer' target='_blank' onClick={this.handleAvatarClick}>
+            <a className='avatar' href={account.get('url')} rel='noopener noreferrer' target='_blank' onClick={this.handleAvatarClick}>
               <Avatar account={suspended || hidden ? undefined : account} size={90} />
             </a>
 
