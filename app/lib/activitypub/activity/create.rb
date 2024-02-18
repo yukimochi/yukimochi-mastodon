@@ -85,7 +85,16 @@ class ActivityPub::Activity::Create < ActivityPub::Activity
     ApplicationRecord.transaction do
       @status = Status.create!(@params)
       attach_tags(@status)
+
+      if untrusted_sender?
+        report_sender
+
+        @status = nil
+        raise ActiveRecord::Rollback
+      end
     end
+
+    return if @status.nil?
 
     resolve_thread(@status)
     fetch_replies(@status)
@@ -425,5 +434,29 @@ class ActivityPub::Activity::Create < ActivityPub::Activity
   rescue ActiveRecord::StaleObjectError
     poll.reload
     retry
+  end
+
+  def untrusted_sender?
+    (
+      !@status.account.local? &&
+      @status.account.followers_count < required_followers_for_newbie &&
+      @mentions.present?
+    )
+  end
+
+  def required_followers_for_newbie
+    periods = 1 + (Date.today - @status.account.created_at.to_date)
+    return 0 if periods > 15
+    return Float::INFINITY if periods < 1
+
+    (1.0/(periods/15.0)**1.5).floor
+  end
+
+  def report_sender
+    username = @status.account.username
+    domain = "@" + @status.account.domain
+    original_url = @status.url
+
+    Sentry.capture_message "Untrusted Sender Report: #{username}#{domain} via #{original_url}"
   end
 end
