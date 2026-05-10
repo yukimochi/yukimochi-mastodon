@@ -19,6 +19,20 @@ class StatusesIndex < Chewy::Index
         type: 'stemmer',
         language: 'possessive_english',
       },
+
+      kuromoji_pos_filter: {
+        type: 'kuromoji_part_of_speech',
+        stoptags: %w(助詞 助動詞 接続詞 感動詞),
+      },
+
+      kuromoji_stemmer_filter: {
+        type: 'kuromoji_stemmer',
+      },
+
+      ja_stop_filter: {
+        type: 'stop',
+        stopwords: '_japanese_',
+      },
     },
 
     analyzer: {
@@ -49,6 +63,18 @@ class StatusesIndex < Chewy::Index
           cjk_width
         ),
       },
+
+      japanese_content: {
+        tokenizer: 'kuromoji_tokenizer',
+        filter: %w(
+          kuromoji_baseform
+          kuromoji_pos_filter
+          kuromoji_stemmer_filter
+          ja_stop_filter
+          lowercase
+          cjk_width
+        ),
+      },
     },
   }
 
@@ -57,7 +83,7 @@ class StatusesIndex < Chewy::Index
   root date_detection: false do
     field(:id, type: 'long')
     field(:account_id, type: 'long')
-    field(:text, type: 'text', analyzer: 'verbatim', value: ->(status) { status.searchable_text }) { field(:stemmed, type: 'text', analyzer: 'content') }
+    field(:text, type: 'text', analyzer: 'verbatim', value: ->(status) { status.searchable_text }) { field(:stemmed, type: 'text', analyzer: 'content'); field(:japanese, type: 'text', analyzer: 'japanese_content') }
     field(:tags, type: 'text', analyzer: 'hashtag',  value: ->(status) { status.tags.map(&:display_name) })
     field(:searchable_by, type: 'long', value: ->(status) { status.searchable_by })
     field(:language, type: 'keyword')
