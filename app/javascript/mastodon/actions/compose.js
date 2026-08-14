@@ -324,8 +324,67 @@ export function submitComposeFail(error) {
   };
 }
 
+// WQHD (2560x1440) equivalent. Images whose longest edge exceeds this value
+// are downscaled client-side before upload to avoid excessive memory usage
+// (and potential crashes) on the server during image processing.
+const MAX_IMAGE_EDGE = 2560;
+
+/**
+ * Downscales an image file to at most WQHD (2560x1440) resolution.
+ *
+ * Only raster image files (image/*) are processed. Non-image files (videos,
+ * audio, GIFs, etc.) are returned unchanged. If the image is already within
+ * the target dimensions, the original file is returned as-is.
+ *
+ * @param {File} file the file to potentially downscale
+ * @returns {Promise<File>} the (possibly downscaled) file
+ */
+async function downscaleImage(file) {
+  if (!file.type.startsWith('image/') || file.type === 'image/gif') {
+    return file;
+  }
+
+  try {
+    const bitmap = await createImageBitmap(file);
+    const { width, height } = bitmap;
+
+    // Only downscale if the longest edge exceeds the WQHD target.
+    if (Math.max(width, height) <= MAX_IMAGE_EDGE) {
+      bitmap.close();
+      return file;
+    }
+
+    // Preserve aspect ratio, capping the longest edge at MAX_IMAGE_EDGE.
+    const scale = MAX_IMAGE_EDGE / Math.max(width, height);
+    const targetWidth = Math.round(width * scale);
+    const targetHeight = Math.round(height * scale);
+
+    const canvas = new OffscreenCanvas(targetWidth, targetHeight);
+    const ctx = canvas.getContext('2d');
+    if (!ctx) {
+      bitmap.close();
+      return file;
+    }
+
+    ctx.imageSmoothingEnabled = true;
+    ctx.imageSmoothingQuality = 'high';
+    ctx.drawImage(bitmap, 0, 0, targetWidth, targetHeight);
+    bitmap.close();
+
+    // WebP supports alpha (transparency), so it is safe to use for all images.
+    const blob = await canvas.convertToBlob({ type: 'image/webp', quality: 0.9 });
+    return new File([blob], file.name.replace(/\.[^.]+$/, '') + '.webp', {
+      type: 'image/webp',
+      lastModified: file.lastModified,
+    });
+  } catch {
+    // If the image cannot be decoded or processed, fall back to the original.
+    return file;
+  }
+}
+
 export function uploadCompose(files) {
-  return function (dispatch, getState) {
+  return async function (dispatch, getState) {
     // Exit if there's a quote.
     if (getState().compose.get('quoted_status_id')) {
       dispatch(showAlert({ message: messages.uploadQuote }));
@@ -349,7 +408,12 @@ export function uploadCompose(files) {
       if (media.size + i > (uploadLimit - 1)) break;
 
       const data = new FormData();
-      data.append('file', file);
+
+      // Downscale large images client-side to WQHD (2560x1440) before upload,
+      // to avoid excessive memory usage / crashes on the server during processing.
+      const uploadFile = await downscaleImage(file);
+
+      data.append('file', uploadFile);
 
       api().post('/api/v2/media', data, {
         onUploadProgress: function({ loaded }){
@@ -361,7 +425,7 @@ export function uploadCompose(files) {
         // poll the server until it is, before showing the media attachment as uploaded
 
         if (status === 200) {
-          dispatch(uploadComposeSuccess(data, file));
+          dispatch(uploadComposeSuccess(data, uploadFile));
         } else if (status === 202) {
           dispatch(uploadComposeProcessing());
 
@@ -370,7 +434,7 @@ export function uploadCompose(files) {
           const poll = () => {
             api().get(`/api/v1/media/${data.id}`).then(response => {
               if (response.status === 200) {
-                dispatch(uploadComposeSuccess(response.data, file));
+                dispatch(uploadComposeSuccess(response.data, uploadFile));
               } else if (response.status === 206) {
                 const retryAfter = (Math.log2(tryCount) || 1) * 1000;
                 tryCount += 1;
